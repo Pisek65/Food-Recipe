@@ -19,6 +19,17 @@ class _FormScreenState extends State<FormScreen> {
   late TextEditingController _ingredientsController;
   late TextEditingController _stepsController;
 
+  // รายการหมวดหมู่ของสูตรอาหาร
+  final List<String> _categories = [
+    "อาหารคาว",
+    "อาหารหวาน",
+    "เครื่องดื่ม",
+    "อาหารว่าง",
+    "อาหารเพื่อสุขภาพ"
+  ];
+  
+  String? _selectedCategory; // เก็บค่าหมวดหมู่ที่เลือก
+
   @override
   void initState() {
     super.initState();
@@ -26,6 +37,9 @@ class _FormScreenState extends State<FormScreen> {
     _descriptionController = TextEditingController(text: widget.recipe?.description ?? "");
     _ingredientsController = TextEditingController(text: widget.recipe?.ingredients ?? "");
     _stepsController = TextEditingController(text: widget.recipe?.steps ?? "");
+    
+    // ถ้ามีค่าเก่าให้ใส่ลงไป
+    _selectedCategory = widget.recipe?.category ?? _categories.first;
   }
 
   @override
@@ -50,6 +64,7 @@ class _FormScreenState extends State<FormScreen> {
             description: _descriptionController.text,
             ingredients: _ingredientsController.text,
             steps: _stepsController.text,
+            category: _selectedCategory ?? _categories.first, // บันทึกหมวดหมู่
             date: DateTime.now(),
           ),
         );
@@ -61,6 +76,7 @@ class _FormScreenState extends State<FormScreen> {
           _descriptionController.text,
           _ingredientsController.text,
           _stepsController.text,
+          category: _selectedCategory ?? _categories.first, // บันทึกหมวดหมู่ที่แก้ไข
         );
       }
       Navigator.pop(context); // ปิดหน้า FormScreen กลับไปที่หน้าหลัก
@@ -102,7 +118,28 @@ class _FormScreenState extends State<FormScreen> {
                 decoration: const InputDecoration(labelText: "ขั้นตอนการทำ"),
                 validator: (value) => value!.isEmpty ? "กรุณาป้อนขั้นตอนการทำ" : null,
               ),
+
+              const SizedBox(height: 16),
+
+              // ✅ Dropdown สำหรับเลือกหมวดหมู่
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(labelText: "หมวดหมู่"),
+                value: _selectedCategory,
+                items: _categories.map((category) {
+                  return DropdownMenuItem<String>(
+                    value: category,
+                    child: Text(category),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedCategory = value;
+                  });
+                },
+              ),
+
               const SizedBox(height: 20),
+
               ElevatedButton(
                 onPressed: _saveRecipe,
                 style: ElevatedButton.styleFrom(

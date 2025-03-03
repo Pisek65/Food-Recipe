@@ -4,6 +4,7 @@ class RecipeItem {
   final String description;
   final String ingredients;
   final String steps;
+  final String category;
   final DateTime date;
 
   RecipeItem({
@@ -12,6 +13,7 @@ class RecipeItem {
     required this.description,
     required this.ingredients,
     required this.steps,
+    required this.category,
     required this.date,
   });
 }

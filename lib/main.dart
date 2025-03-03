@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '/provider/RecipeProvider.dart';
 import '/model/RecipeItem.dart';
 import '/formScreen.dart';
-import '/editScreen.dart'; // นำเข้า EditScreen
+import '/editScreen.dart';
 
 void main() {
   runApp(
@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
 
 class RecipeListScreen extends StatelessWidget {
   const RecipeListScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     var recipeProvider = Provider.of<RecipeProvider>(context);
@@ -39,7 +40,7 @@ class RecipeListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'สูตรอาหาร',
+          'สูตรอาหารทั้งหมด',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.orangeAccent,
@@ -62,34 +63,82 @@ class RecipeListScreen extends StatelessWidget {
                   ),
                   elevation: 5,
                   margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.all(16),
-                    title: Text(
-                      recipe.title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
-                    ),
-                    subtitle: Text(
-                      recipe.description,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: Colors.black54),
-                    ),
-                    leading: const Icon(Icons.restaurant_menu, color: Colors.orange),
-
-                    // ✅ ปุ่มแก้ไข (Edit)
-                    trailing: IconButton(
-                      icon: const Icon(Icons.edit, color: Colors.blue),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditScreen(item: recipe),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // ✅ ชื่อสูตรอาหาร
+                        Text(
+                          recipe.title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22,
+                            color: Colors.orange,
                           ),
-                        );
-                      },
+                        ),
+                        const SizedBox(height: 8),
+
+                        // ✅ รายละเอียด
+                        Text(
+                          recipe.description,
+                          style: const TextStyle(fontSize: 16, color: Colors.black87),
+                        ),
+                        const SizedBox(height: 8),
+
+                        // ✅ หมวดหมู่
+                        Text(
+                          "หมวดหมู่: ${recipe.category}",
+                          style: const TextStyle(fontSize: 14, color: Colors.blueGrey),
+                        ),
+                        const SizedBox(height: 8),
+
+                        // ✅ วัตถุดิบ
+                        Text(
+                          "วัตถุดิบ: ${recipe.ingredients}",
+                          style: const TextStyle(fontSize: 14, color: Colors.black54),
+                        ),
+                        const SizedBox(height: 8),
+
+                        // ✅ ขั้นตอน
+                        Text(
+                          "ขั้นตอนการทำ: ${recipe.steps}",
+                          style: const TextStyle(fontSize: 14, color: Colors.black54),
+                        ),
+                        const SizedBox(height: 8),
+
+                        // ✅ วันที่เพิ่ม/แก้ไข
+                        Text(
+                          "เพิ่มเมื่อ: ${recipe.date.toLocal()}",
+                          style: const TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+
+                        const Divider(),
+
+                        // ✅ ปุ่มแก้ไขและลบ
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit, color: Colors.blue),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EditScreen(item: recipe),
+                                  ),
+                                );
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () {
+                                recipeProvider.removeRecipe(recipe.keyID);
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 );

@@ -11,8 +11,8 @@ class RecipeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateRecipe(String keyID, String title, String description, String ingredients, String steps) {
-    int index = _recipes.indexWhere((recipe) => recipe.keyID == keyID);
+  void updateRecipe(String keyID, String title, String description, String ingredients, String steps, {String? category}) {
+    var index = _recipes.indexWhere((recipe) => recipe.keyID == keyID);
     if (index != -1) {
       _recipes[index] = RecipeItem(
         keyID: keyID,
@@ -20,14 +20,17 @@ class RecipeProvider with ChangeNotifier {
         description: description,
         ingredients: ingredients,
         steps: steps,
-        date: _recipes[index].date, // ใช้วันที่เดิม
+        category: category ?? _recipes[index].category,
+        date: DateTime.now(),
       );
       notifyListeners();
     }
   }
 
-  void deleteRecipe(String keyID) {
+  // ✅ ฟังก์ชันลบสูตรอาหาร
+  void removeRecipe(String keyID) {
     _recipes.removeWhere((recipe) => recipe.keyID == keyID);
     notifyListeners();
   }
 }
+
